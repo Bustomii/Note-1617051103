@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#000</color>
+    <color name="msg_no_notes">#000</color>
+    <color name="hint_enter_note">#000</color>
+    <color name="timestamp">#000</color>
+    <color name="note_list_text">#000</color>
+</resources>
+
