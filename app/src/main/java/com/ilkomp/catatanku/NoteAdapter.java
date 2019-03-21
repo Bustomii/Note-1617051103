@@ -1,9 +1,5 @@
 package com.ilkomp.catatanku;
 
-/**
- * Created by ravi on 20/02/18.
- */
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -55,10 +51,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
         holder.note.setText(note.getNote());
 
-        // Displaying dot from HTML character code
-        holder.dot.setText(Html.fromHtml("&#8226;"));
+       holder.dot.setText(Html.fromHtml("&#8226;"));
 
-        // Formatting and displaying timestamp
         holder.timestamp.setText(formatDate(note.getTimestamp()));
     }
 
@@ -67,11 +61,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         return notesList.size();
     }
 
-    /**
-     * Formatting timestamp to `MMM d` format
-     * Input: 2018-02-21 00:15:42
-     * Output: Feb 21
-     */
     private String formatDate(String dateStr) {
         try {
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
