@@ -57,11 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         toggleEmptyNotes();
 
-        /**
-         * On long press on RecyclerView item, open alert dialog
-         * with options to choose
-         * Edit and Delete
-         * */
         recyclerView.addOnItemTouchListener(new RecycleToash(this,
                 recyclerView, new RecycleToash.ClickListener() {
             @Override
@@ -75,68 +70,41 @@ public class MainActivity extends AppCompatActivity {
         }));
     }
 
-    /**
-     * Inserting new note in db
-     * and refreshing the list
-     */
     private void createNote(String note) {
-        // inserting note in db and getting
-        // newly inserted note id
         long id = db.insertNote(note);
 
-        // get the newly inserted note from db
         model n = db.getNote(id);
 
         if (n != null) {
-            // adding new note to array list at 0 position
             notesList.add(0, n);
 
-            // refreshing the list
             mAdapter.notifyDataSetChanged();
 
             toggleEmptyNotes();
         }
     }
 
-    /**
-     * Updating note in db and updating
-     * item in the list by its position
-     */
     private void updateNote(String note, int position) {
         model n = notesList.get(position);
-        // updating note text
         n.setNote(note);
 
-        // updating note in db
         db.updateNote(n);
 
-        // refreshing the list
         notesList.set(position, n);
         mAdapter.notifyItemChanged(position);
 
         toggleEmptyNotes();
     }
 
-    /**
-     * Deleting note from SQLite and removing the
-     * item from the list by its position
-     */
     private void deleteNote(int position) {
-        // deleting the note from db
         db.deleteNote(notesList.get(position));
 
-        // removing the note from the list
         notesList.remove(position);
         mAdapter.notifyItemRemoved(position);
 
         toggleEmptyNotes();
     }
 
-    /**
-     * Opens dialog with Edit - Delete options
-     * Edit - 0
-     * Delete - 0
-     */
     private void showActionsDialog(final int position) {
         CharSequence colors[] = new CharSequence[]{"Edit", "Delete"};
 
@@ -156,12 +124,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Shows alert dialog with EditText options to enter / edit
-     * a note.
-     * when shouldUpdate=true, it automatically displays old note and changes the
-     * button text to UPDATE
-     */
     private void showNoteDialog(final boolean shouldUpdate, final model note, final int position) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         View view = layoutInflaterAndroid.inflate(R.layout.note_dialog, null);
@@ -196,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Show toast message when no text is entered
                 if (TextUtils.isEmpty(inputNote.getText().toString())) {
                     Toast.makeText(MainActivity.this, "Enter note!", Toast.LENGTH_SHORT).show();
                     return;
@@ -204,23 +165,16 @@ public class MainActivity extends AppCompatActivity {
                     alertDialog.dismiss();
                 }
 
-                // check if user updating note
                 if (shouldUpdate && note != null) {
-                    // update note by it's id
                     updateNote(inputNote.getText().toString(), position);
                 } else {
-                    // create new note
                     createNote(inputNote.getText().toString());
                 }
             }
         });
     }
 
-    /**
-     * Toggling list and empty notes view
-     */
     private void toggleEmptyNotes() {
-        // you can check notesList.size() > 0
 
         if (db.getNotesCount() > 0) {
             noNotesView.setVisibility(View.GONE);
