@@ -11,16 +11,11 @@ import java.util.List;
 
 import com.ilkomp.catatanku.model;
 
-/**
- * Created by ravi on 15/03/18.
- */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // Database Version
     private static final int DATABASE_VERSION = 1;
 
-    // Database Name
     private static final String DATABASE_NAME = "notes_db";
 
 
@@ -28,45 +23,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // create notes table
         db.execSQL(model.CREATE_TABLE);
     }
 
-    // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + model.TABLE_NAME);
 
-        // Create tables again
         onCreate(db);
     }
 
     public long insertNote(String note) {
-        // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        // `id` and `timestamp` will be inserted automatically.
-        // no need to add them
         values.put(model.COLUMN_NOTE, note);
 
-        // insert row
         long id = db.insert(model.TABLE_NAME, null, values);
-
-        // close db connection
         db.close();
 
-        // return newly inserted row id
         return id;
     }
 
     public model getNote(long id) {
-        // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(model.TABLE_NAME,
@@ -77,13 +59,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        // prepare note object
         model note = new model(
                 cursor.getInt(cursor.getColumnIndex(model.COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(model.COLUMN_NOTE)),
                 cursor.getString(cursor.getColumnIndex(model.COLUMN_TIMESTAMP)));
 
-        // close the db connection
         cursor.close();
 
         return note;
@@ -92,14 +72,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<model> getAllNotes() {
         List<model> notes = new ArrayList<>();
 
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + model.TABLE_NAME + " ORDER BY " +
                 model.COLUMN_TIMESTAMP + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 model note = new model();
@@ -111,10 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        // close db connection
         db.close();
 
-        // return notes list
         return notes;
     }
 
@@ -127,7 +103,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
 
-        // return count
         return count;
     }
 
@@ -137,7 +112,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(model.COLUMN_NOTE, note.getNote());
 
-        // updating row
         return db.update(model.TABLE_NAME, values, model.COLUMN_ID + " = ?",
                 new String[]{String.valueOf(note.getId())});
     }
